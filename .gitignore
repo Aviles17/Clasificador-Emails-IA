@@ -1,0 +1,4 @@
+#Ignore Train Databases
+*.csv
+#Ignore Pycache
+*/__pycache__/
