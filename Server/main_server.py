@@ -9,7 +9,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 app = Flask(__name__)
 
 #Load Vocabulary and Count Vectorizer params
-# Load the vocabulary and parameters
+#Load the vocabulary and parameters
 with open('Server/Models/cv_vocab.pkl', 'rb') as f:
     vocab = pickle.load(f)
 
@@ -24,9 +24,9 @@ cv = CountVectorizer(vocabulary=vocab, **params)
 # Load Naive Bayes model
 naive_bayes_model = load("Server/Models/model_NB.joblib")
 
-@app.route("/")
+@app.route("/", methods=['GET'])
 def root_server():
-    return "Conection succesfully built"
+    return "Server Alive"
 
 @app.route('/NaiveBayesPredict', methods=['POST'])
 def naive_bayes_predict():
@@ -40,4 +40,4 @@ def naive_bayes_predict():
 
 if __name__ == '__main__':
     #Run Flask app
-    app.run(port=8080, debug=True)
+    app.run(port=8081, debug=True)
