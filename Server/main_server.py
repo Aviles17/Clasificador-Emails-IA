@@ -31,9 +31,10 @@ def root_server():
 @app.route('/NaiveBayesPredict', methods=['POST'])
 def naive_bayes_predict():
     data = request.get_json()  # Parse the JSON data from the request
-    message = au.process_message(data)# Get the email object
-    df_message = pd.DataFrame({'message': [message.message]})
+    message = au.clean_message(data['body'].split(" "))# Get the email object
+    df_message = pd.DataFrame({'message': [message]})
     message_array = cv.fit_transform(df_message['message'].apply(lambda x: ' '.join(x))).toarray()
+    print(message_array)
     prediction = naive_bayes_model.predict(message_array)
     return str(prediction[0])
 
