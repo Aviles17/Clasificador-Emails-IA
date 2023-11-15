@@ -8,15 +8,14 @@ from sklearn.feature_extraction.text import CountVectorizer
 
 app = Flask(__name__)
 
-#Load Vocabulary and Count Vectorizer params
-#Load the vocabulary and parameters
+
 with open('Server/Models/cv_vocab.pkl', 'rb') as f:
     vocab = pickle.load(f)
 
 with open('Server/Models/cv_params.pkl', 'rb') as f:
     params = pickle.load(f)
-# Recreate the CountVectorizer
-# Remove 'vocabulary' from params
+
+
 if 'vocabulary' in params:
     del params['vocabulary']
     
@@ -36,7 +35,7 @@ if 'vocabulary' in params1:
         
 cv = CountVectorizer(vocabulary=vocab, **params)
 cv1 = CountVectorizer(vocabulary=vocab1, **params1)
-# Load Naive Bayes model
+
 naive_bayes_model = load("Server/Models/model_NB.joblib")
 naive_bayes_model_1 = load("Server/Models/model_NB_1.joblib")
 @app.route("/", methods=['GET'])
@@ -45,8 +44,8 @@ def root_server():
 
 @app.route('/NaiveBayesPredict', methods=['POST'])
 def naive_bayes_predict():
-    data = request.get_json()  # Parse the JSON data from the request
-    message = au.clean_message(data['body'].split(" "))# Get the email object
+    data = request.get_json()  
+    message = au.clean_message(data['body'].split(" "))
     df_message = pd.DataFrame({'message': [message]})
     message_array = cv.fit_transform(df_message['message'].apply(lambda x: ' '.join(x))).toarray()
     prediction = naive_bayes_model.predict(message_array)
@@ -54,8 +53,8 @@ def naive_bayes_predict():
 
 @app.route('/NaiveBayesPredict1', methods=['POST'])
 def naive_bayes_predict_1():
-    data = request.get_json()  # Parse the JSON data from the request
-    message = au.clean_message(data['body'].split(" "))# Get the email object
+    data = request.get_json()  
+    message = au.clean_message(data['body'].split(" "))
     df_message = pd.DataFrame({'message': [message]})
     message_array = cv1.fit_transform(df_message['message'].apply(lambda x: ' '.join(x))).toarray()
     prediction = naive_bayes_model_1.predict(message_array)
@@ -63,5 +62,4 @@ def naive_bayes_predict_1():
 
 
 if __name__ == '__main__':
-    #Run Flask app
     app.run(port=8081, debug=True)
